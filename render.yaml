@@ -1,6 +1,7 @@
 services:
   - type: web
     name: traveloop-api
+    plan: free
     env: node
     rootDir: Backend
     buildCommand: npm install
@@ -31,5 +32,6 @@ services:
 
 databases:
   - name: traveloop-db
+    plan: free
     databaseName: traveloop
     user: traveloop_user
