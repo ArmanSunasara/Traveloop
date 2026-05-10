@@ -172,11 +172,8 @@ router.delete('/:id', async (req, res) => {
       return res.status(401).json({ message: 'Not authorized' });
     }
 
-    // Cascade delete manually since we didn't set onDelete CASCADE in DB
-    await Stop.destroy({ where: { trip_id: trip.id } });
-    await ChecklistItem.destroy({ where: { trip_id: trip.id } });
-    await Note.destroy({ where: { trip_id: trip.id } });
-    await Budget.destroy({ where: { trip_id: trip.id } });
+    // Cascade delete is now handled by the database
+
 
     await trip.destroy();
 

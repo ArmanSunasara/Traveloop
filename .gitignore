@@ -9,6 +9,7 @@ coverage/
 # Production
 build/
 dist/
+dist-ssr/
 out/
 
 # Environment variables
@@ -17,32 +18,7 @@ out/
 .env.development.local
 .env.test.local
 .env.production.local
-
-# Python/ML Service
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-develop-eggs/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-.venv
-venv/
-ENV/
-env/
+*.local
 
 # OS-generated files
 .DS_Store
@@ -71,5 +47,10 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Project specific
+frontend/node_modules/
+frontend/dist/
+frontend/.env
 Backend/node_modules/
 Backend/.env

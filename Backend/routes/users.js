@@ -66,17 +66,8 @@ router.delete('/me', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Get all trips for the user to delete associated child records
-    const trips = await Trip.findAll({ where: { user_id: user.id } });
-    const tripIds = trips.map(t => t.id);
+    // Cascade delete is now handled by the database
 
-    if (tripIds.length > 0) {
-      await Stop.destroy({ where: { trip_id: tripIds } });
-      await ChecklistItem.destroy({ where: { trip_id: tripIds } });
-      await Note.destroy({ where: { trip_id: tripIds } });
-      await Budget.destroy({ where: { trip_id: tripIds } });
-      await Trip.destroy({ where: { user_id: user.id } });
-    }
 
     // Delete user
     await user.destroy();

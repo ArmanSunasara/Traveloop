@@ -43,7 +43,7 @@ router.post('/register', async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '7d' },
       (err, token) => {
-        if (err) throw err;
+        if (err) return res.status(500).json({ message: 'Token generation failed' });
         
         // Exclude password_hash from response
         const userResponse = user.toJSON();
@@ -90,7 +90,7 @@ router.post('/login', async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '7d' },
       (err, token) => {
-        if (err) throw err;
+        if (err) return res.status(500).json({ message: 'Token generation failed' });
         
         // Exclude password_hash from response
         const userResponse = user.toJSON();
