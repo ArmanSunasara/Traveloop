@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-ro
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
-// Pages (to be created)
+// Pages
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -11,6 +11,9 @@ import Dashboard from './pages/Dashboard';
 import TripDetails from './pages/TripDetails';
 import CreateTrip from './pages/CreateTrip';
 import Explore from './pages/Explore';
+import MyTrips from './pages/MyTrips';
+import Profile from './pages/Profile';
+import PublicTrip from './pages/PublicTrip';
 import Navbar from './components/Navbar';
 
 const PrivateRoute = ({ children }) => {
@@ -22,79 +25,70 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen flex flex-col">
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
           <Toaster position="top-center" reverseOrder={false} />
           <Navbar />
-          <main className="flex-grow">
+          <main style={{ flexGrow: 1 }}>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/explore" element={<Explore />} />
+              <Route path="/shared/:id" element={<PublicTrip />} />
               
               <Route path="/dashboard" element={
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
+                <PrivateRoute><Dashboard /></PrivateRoute>
               } />
-              
               <Route path="/trips/:id" element={
-                <PrivateRoute>
-                  <TripDetails />
-                </PrivateRoute>
+                <PrivateRoute><TripDetails /></PrivateRoute>
               } />
-              
               <Route path="/create-trip" element={
-                <PrivateRoute>
-                  <CreateTrip />
-                </PrivateRoute>
+                <PrivateRoute><CreateTrip /></PrivateRoute>
               } />
-              
-              <Route path="/explore" element={<Explore />} />
+              <Route path="/my-trips" element={
+                <PrivateRoute><MyTrips /></PrivateRoute>
+              } />
+              <Route path="/profile" element={
+                <PrivateRoute><Profile /></PrivateRoute>
+              } />
             </Routes>
           </main>
-          <footer className="py-16 md:py-20 bg-text-main text-white relative overflow-hidden">
-            <div className="container relative z-10 px-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-16">
-                <div className="sm:col-span-2">
-                  <div className="flex items-center gap-2 text-2xl font-extrabold mb-4 md:mb-6">
-                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg">
-                      <Plane className="text-white" size={16} />
+          <footer style={{ padding: '4rem 0 5rem', backgroundColor: 'var(--text-main)', color: 'white', position: 'relative', overflow: 'hidden' }}>
+            <div className="container" style={{ position: 'relative', zIndex: 10 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2.5rem', marginBottom: '3rem' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.5rem', fontWeight: 800, marginBottom: '1.5rem' }}>
+                    <div style={{ width: '2rem', height: '2rem', background: 'var(--primary)', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Plane style={{ color: 'white' }} size={16} />
                     </div>
                     Traveloop
                   </div>
-                  <p className="text-white/50 max-w-sm font-medium leading-relaxed text-sm md:text-base">
-                    The world's most advanced travel intelligence platform. Plan, organize, and execute journeys with mathematical precision.
+                  <p style={{ color: 'rgba(255,255,255,0.5)', maxWidth: '20rem', fontWeight: 500, lineHeight: 1.6, fontSize: '0.875rem' }}>
+                    Plan, organize, and experience your dream journeys with our intelligent travel platform.
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-black text-xs uppercase tracking-[0.2em] mb-4 md:mb-6 text-primary">Platform</h4>
-                  <ul className="space-y-3 md:space-y-4 text-sm font-bold text-white/70">
-                    <li><Link to="/explore" className="hover:text-white transition-colors">Global Discovery</Link></li>
-                    <li><Link to="/dashboard" className="hover:text-white transition-colors">Command Center</Link></li>
-                    <li><Link to="/create-trip" className="hover:text-white transition-colors">Initiate Expedition</Link></li>
+                  <h4 style={{ fontWeight: 900, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '1.5rem', color: 'var(--primary)' }}>Platform</h4>
+                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.875rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>
+                    <li><Link to="/explore" style={{ color: 'inherit', textDecoration: 'none' }}>Explore</Link></li>
+                    <li><Link to="/dashboard" style={{ color: 'inherit', textDecoration: 'none' }}>Dashboard</Link></li>
+                    <li><Link to="/create-trip" style={{ color: 'inherit', textDecoration: 'none' }}>Plan a Trip</Link></li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-black text-xs uppercase tracking-[0.2em] mb-4 md:mb-6 text-primary">Intelligence</h4>
-                  <ul className="space-y-3 md:space-y-4 text-sm font-bold text-white/70">
-                    <li><button className="hover:text-white transition-colors text-left">ML Insights</button></li>
-                    <li><button className="hover:text-white transition-colors text-left">Budget Analytics</button></li>
-                    <li><button className="hover:text-white transition-colors text-left">Security Vault</button></li>
+                  <h4 style={{ fontWeight: 900, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '1.5rem', color: 'var(--primary)' }}>Account</h4>
+                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.875rem', fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>
+                    <li><Link to="/my-trips" style={{ color: 'inherit', textDecoration: 'none' }}>My Trips</Link></li>
+                    <li><Link to="/profile" style={{ color: 'inherit', textDecoration: 'none' }}>Settings</Link></li>
                   </ul>
                 </div>
               </div>
-              <div className="pt-8 md:pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
-                <p className="text-white/40 text-xs font-bold uppercase tracking-widest text-center md:text-left">
-                  &copy; 2026 Traveloop Intelligence Systems. All rights reserved.
+              <div style={{ paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                  &copy; 2026 Traveloop. All rights reserved.
                 </p>
-                <div className="flex gap-6 md:gap-8 text-xs font-bold uppercase tracking-widest text-white/40">
-                  <button className="hover:text-white transition-colors">Security</button>
-                  <button className="hover:text-white transition-colors">Privacy</button>
-                  <button className="hover:text-white transition-colors">Terms</button>
-                </div>
               </div>
             </div>
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] md:w-[800px] h-[200px] md:h-[300px] bg-primary/10 blur-[100px] md:blur-[120px] rounded-full"></div>
           </footer>
         </div>
       </Router>

@@ -2,159 +2,138 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Plane } from 'lucide-react';
+import { Mail, Lock, Plane, User, ArrowRight, Eye, EyeOff, Check } from 'lucide-react';
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [error, setError] = useState('');
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!agreedToTerms) {
-      alert('Please agree to the Terms of Service and Privacy Policy');
-      return;
-    }
     setLoading(true);
-    const success = await register(formData);
-    setLoading(false);
-    if (success) navigate('/dashboard');
+    setError('');
+    try {
+      await register(formData);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const passChecks = [
+    { label: 'At least 6 characters', met: formData.password.length >= 6 },
+  ];
+
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row">
-      {/* Left side: Immersive Image */}
-      <div className="hidden lg:flex lg:flex-1 relative overflow-hidden bg-slate-900">
-        <img 
-          src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1200" 
-          alt="Travel landscape"
-          className="absolute inset-0 w-full h-full object-cover opacity-60 scale-110"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/60 to-transparent"></div>
-        <div className="absolute top-16 lg:top-20 left-8 lg:left-20">
-          <Link to="/" className="flex items-center gap-2 text-2xl font-extrabold text-white hover:text-primary transition-colors">
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-xl hover:bg-primary transition-colors">
-              <Plane className="text-text-main" size={20} />
-            </div>
-            Traveloop
-          </Link>
+    <div className="min-h-screen flex">
+      {/* Left - Visual */}
+      <div className="hidden lg:flex flex-1 items-center justify-center bg-gradient-to-br from-surface-dark via-[#1a1f3a] to-surface-dark-secondary relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-accent-cyan/15 rounded-full blur-[120px]"></div>
+          <div className="absolute bottom-1/4 left-1/4 w-[300px] h-[300px] bg-primary/15 rounded-full blur-[100px]"></div>
         </div>
-        <div className="absolute bottom-16 lg:bottom-20 left-8 lg:left-20 right-8 lg:right-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <h2 className="text-3xl lg:text-5xl font-extrabold text-white mb-4 lg:mb-6 leading-tight text-balance">
-              Start your next <br />great story with us.
-            </h2>
-            <p className="text-white/80 text-lg lg:text-xl max-w-md font-medium">
-              Join 50,000+ travelers planning their dream journeys with precision.
-            </p>
-          </motion.div>
+        <div className="relative z-10 text-center p-12 max-w-lg">
+          <div className="text-7xl mb-6">✈️</div>
+          <h2 className="text-3xl font-bold font-[Poppins] text-white mb-4">Start your journey</h2>
+          <p className="text-white/50 leading-relaxed">
+            Create your free account and start planning unforgettable trips in minutes.
+          </p>
+          <div className="flex flex-wrap gap-3 justify-center mt-8">
+            {['Free forever', 'No credit card', 'Instant access'].map((t, i) => (
+              <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 text-xs font-medium">
+                <Check size={12} className="text-success" /> {t}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Right side: Form */}
-      <div className="flex-1 flex items-center justify-center p-6 md:p-8 bg-white min-h-screen">
-        <motion.div 
+      {/* Right - Form */}
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-10">
+        <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
           className="w-full max-w-md"
         >
-          <div className="mb-10 md:mb-12">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-text-main mb-3">Create account</h1>
-            <p className="text-text-sub font-medium text-base md:text-lg">Join our global community of modern explorers.</p>
-          </div>
+          <Link to="/" className="inline-flex items-center gap-2.5 mb-10">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white shadow-lg">
+              <Plane size={18} />
+            </div>
+            <span className="text-xl font-bold font-[Poppins] text-foreground">Traveloop</span>
+          </Link>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="input-group">
-              <label className="input-label" htmlFor="name">Full Name</label>
+          <h1 className="text-3xl sm:text-4xl font-bold font-[Poppins] text-foreground tracking-tight mb-2">
+            Create your account
+          </h1>
+          <p className="text-foreground-muted mb-8">
+            Start planning your next trip in seconds.
+          </p>
+
+          {error && (
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+              className="bg-red-50 text-error text-sm font-medium px-4 py-3 rounded-xl border border-red-100 mb-6">
+              {error}
+            </motion.div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="input-label" htmlFor="reg-name">Full Name</label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={18} />
-                <input 
-                  id="name"
-                  type="text"
-                  required
-                  autoComplete="name"
-                  className="form-input pl-12 py-4"
-                  placeholder="Johnathan Doe"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground-faint pointer-events-none" size={18} />
+                <input id="reg-name" type="text" className="form-input pl-11 py-3" placeholder="John Doe"
+                  value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
               </div>
             </div>
 
-            <div className="input-group">
-              <label className="input-label" htmlFor="email">Email Address</label>
+            <div>
+              <label className="input-label" htmlFor="reg-email">Email</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={18} />
-                <input 
-                  id="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  className="form-input pl-12 py-4"
-                  placeholder="name@company.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground-faint pointer-events-none" size={18} />
+                <input id="reg-email" type="email" className="form-input pl-11 py-3" placeholder="you@example.com"
+                  value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required />
               </div>
             </div>
 
-            <div className="input-group">
-              <label className="input-label" htmlFor="password">Create Password</label>
+            <div>
+              <label className="input-label" htmlFor="reg-pass">Password</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={18} />
-                <input 
-                  id="password"
-                  type="password"
-                  required
-                  autoComplete="new-password"
-                  minLength={6}
-                  className="form-input pl-12 py-4"
-                  placeholder="••••••••••••"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground-faint pointer-events-none" size={18} />
+                <input id="reg-pass" type={showPassword ? 'text' : 'password'} className="form-input pl-11 pr-11 py-3" placeholder="••••••••"
+                  value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-foreground-faint hover:text-foreground transition-colors">
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
-              <p className="text-xs text-text-muted mt-2 font-medium">Must be at least 6 characters</p>
+              {formData.password && (
+                <div className="mt-2 space-y-1">
+                  {passChecks.map((c, i) => (
+                    <p key={i} className={`text-xs font-medium flex items-center gap-1.5 ${c.met ? 'text-success' : 'text-foreground-faint'}`}>
+                      <Check size={12} /> {c.label}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <div className="flex items-start gap-3 text-sm text-text-sub mb-8">
-              <input 
-                type="checkbox" 
-                id="terms"
-                required 
-                checked={agreedToTerms}
-                onChange={(e) => setAgreedToTerms(e.target.checked)}
-                className="mt-1 rounded border-border text-primary focus:ring-primary focus:ring-offset-0 w-4 h-4 cursor-pointer flex-shrink-0" 
-              />
-              <label htmlFor="terms" className="font-medium cursor-pointer">
-                I agree to the <button type="button" onClick={() => alert('Terms of Service would be displayed here')} className="text-primary font-bold hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">Terms of Service</button> and <button type="button" onClick={() => alert('Privacy Policy would be displayed here')} className="text-primary font-bold hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded">Privacy Policy</button>.
-              </label>
-            </div>
-
-            <button 
-              type="submit" 
-              disabled={loading || !agreedToTerms}
-              className={`btn btn-primary w-full py-5 text-base justify-center shadow-lg shadow-blue-100 ${loading ? 'btn-loading' : ''}`}
-            >
-              {loading ? 'Creating account...' : 'Create My Account'}
+            <button type="submit" disabled={loading}
+              className={`btn btn-primary w-full py-3.5 text-base justify-center group ${loading ? 'btn-loading' : ''}`}>
+              {loading ? 'Creating account...' : 'Create Account'}
+              {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
             </button>
           </form>
 
-          <div className="mt-8 text-center">
-            <p className="text-text-sub font-medium">
-              Already have an account? {' '}
-              <Link to="/login" className="text-primary hover:underline font-extrabold focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-1">
-                Sign in
-              </Link>
-            </p>
-          </div>
+          <p className="mt-8 text-center text-sm text-foreground-muted">
+            Already have an account?{' '}
+            <Link to="/login" className="text-primary font-semibold hover:underline">Sign in</Link>
+          </p>
         </motion.div>
       </div>
     </div>
