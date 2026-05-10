@@ -8,7 +8,15 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: 'postgres',
-    logging: false, // set to console.log to see the raw SQL queries
+    logging: false,
+    ...(process.env.NODE_ENV === 'production' && {
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
+      }
+    })
   }
 );
 

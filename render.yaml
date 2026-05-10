@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: traveloop-api
+    env: node
+    rootDir: Backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: DB_HOST
+        fromDatabase:
+          name: traveloop-db
+          property: host
+      - key: DB_USER
+        fromDatabase:
+          name: traveloop-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: traveloop-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: traveloop-db
+          property: database
+      - key: JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: traveloop-db
+    databaseName: traveloop
+    user: traveloop_user
